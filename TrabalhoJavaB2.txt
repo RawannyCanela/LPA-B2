@@ -1,0 +1,204 @@
+package TrabalhoFinal;
+
+import java.util.Scanner;
+
+public class ControleFuncionarios {
+
+    public static void inserirFuncionarios(String[][] matriz, int linhas, int colunas) {
+        Scanner scanner = new Scanner(System.in);
+
+        mostrarTabela(matriz, linhas, colunas);
+
+        System.out.println("Insira o nome do funcionário: ");
+        System.out.println("ATENÇÃO: Apenas letras são permitidas.");
+        String funcionario = scanner.nextLine();
+
+        System.out.println("Insira o função do funcionário escolhido: ");
+        System.out.println("ATENÇÃO: Apenas letras são permitidas.");
+        String funcao = scanner.nextLine();
+
+        System.out.println("Insira o salário do funcionário escolhido: ");
+        System.out.println("ATENÇÃO: Apenas números são permitidas.");
+        String salario = scanner.next();
+
+        int linha = encontrarProximaLinha(matriz, linhas);
+        if (linha != -1) {
+            matriz[linha][0] = funcionario;
+            matriz[linha][1] = funcao;
+            matriz[linha][2] = salario;
+            System.out.println("Funcionário cadastrado");
+        } else {
+            System.out.println("Infelizmente a tabela alçancou o limite escolhido, encerra essa e inicie uma nova se for necessário");
+        }
+    }
+
+    public static void mostrarTabela(String[][] matriz, int linhas, int colunas) {
+        System.out.println("Funcionário | Função | Salário");
+        for (int i = 0; i < linhas; i++) {
+            if (matriz[i][0] != null) {
+                for (int j = 0; j < colunas; j++) {
+                    System.out.print(matriz[i][j] + "  |  ");
+                }
+                System.out.println(" ");
+            }
+        }
+    }
+
+    public static void salarioFinal(String[][] matriz, int linhas, float orcamento) {
+        float valorFinal = 0.0f;
+        for (int i = 0; i < linhas; i++) {
+            if (matriz[i][0] != null) {
+                valorFinal += Float.parseFloat(matriz[i][1]) * Float.parseFloat(matriz[i][2]);
+            }
+        }
+
+        System.out.println("O valor total dos salários dos funcionarios informados é de R$" + valorFinal);
+
+            String funcionarioMaisBemPago = "";
+            float salarioMaisAlto = 0.0f;
+            String funcionarioMenosBemPago = "";
+            float salarioMaisBaixo = Float.MAX_VALUE;
+
+            for (int i = 0; i < linhas; i++) {
+                if (matriz[i][0] != null) {
+                    float salario = Float.parseFloat(matriz[i][2]);
+                    valorFinal += salario;
+                    if (salario > salarioMaisAlto) {
+                        salarioMaisAlto = salario;
+                        funcionarioMaisBemPago = matriz[i][0];
+                    }
+                    if (salario < salarioMaisBaixo) {
+                        salarioMaisBaixo = salario;
+                        funcionarioMenosBemPago = matriz[i][0];
+                    }
+                }
+            }
+
+            System.out.println("O valor total dos salários dos funcionários informados é de R$" + valorFinal);
+            System.out.println("O funcionário mais bem pago é " + funcionarioMaisBemPago + " com um salário de R$" + salarioMaisAlto);
+            System.out.println("O funcionário menos bem pago é " + funcionarioMenosBemPago + " com um salário de R$" + salarioMaisBaixo);
+        }
+
+
+    public static void removerFuncionario(String[][] matriz, int linhas, String funcionario) {
+        boolean encontrado = false;
+        for (int i = 0; i < linhas; i++) {
+            if (matriz[i][0] != null && matriz[i][0].equals(funcionario)) {
+                encontrado = true;
+                matriz[i][0] = null;
+                matriz[i][1] = null;
+                matriz[i][2] = null;
+                matriz[i][3] = null;
+            }
+        }
+        if (encontrado) {
+            System.out.println("Colaborador removido.");
+        } else {
+            System.out.println("Colaborador não encontrado.");
+        }
+    }
+
+    public static int encontrarProximaLinha(String[][] matriz, int linhas) {
+        for (int i = 0; i < linhas; i++) {
+            if (matriz[i][0] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static void alterarSalario(String[][] matriz, int linhas) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Insira o nome do funcionário para alterar o salário: ");
+        String funcionario = scanner.next();
+        boolean encontrado = false;
+
+        for (int i = 0; i < linhas; i++) {
+            if (matriz[i][0] != null && matriz[i][0].equals(funcionario)) {
+                System.out.println("Insira o novo salário para o funcionário " + funcionario + ": ");
+                String novoSalario = scanner.next();
+                matriz[i][2] = novoSalario;
+                encontrado = true;
+                System.out.println("Salário do funcionário " + funcionario + " alterado com sucesso.");
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            System.out.println("Funcionário não encontrado.");
+        }
+    }
+
+    public static int obterQuantidadeFuncionarios() {
+        Scanner scanner = new Scanner(System.in);
+        int quantidade = 0;
+
+        while (true) {
+            System.out.println("Insira a quantidade de funcionários que serão inseridos na tabela: ");
+            String input = scanner.nextLine();
+
+            try {
+                quantidade = Integer.parseInt(input);
+                if (quantidade <= 0) {
+                    System.out.println("Parece que você inseriu um número negativo. Insira um número inteiro válido.");
+                } else {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Caracteres não são aceitos, Iinsira um número inteiro válido.");
+            }
+        }
+
+        return quantidade;
+    }
+
+    public static void main(String[] args) {
+        int pessoas, opcao;
+        int colunas = 3;
+        Scanner scanner = new Scanner(System.in);
+        String nomeProduto;
+
+        pessoas = obterQuantidadeFuncionarios();
+        String[][] lista = new String[pessoas][colunas];
+
+
+
+        do {
+            System.out.println("Selecione uma das operações:");
+            System.out.println(" ");
+            System.out.println("1. Inserir um colaborador na tabela");
+            System.out.println("2. Mostrar a tabela atual");
+            System.out.println("3. Remover um colaborador da tabela");
+            System.out.println("4. Calcular o valor final dos salários dos colaboradores cadastrados");
+            System.out.println("5. Alterar salário de um funcionário");
+            System.out.println("6. Encerrar a tabela");
+
+            opcao = scanner.nextInt();
+            switch (opcao) {
+                case 1:
+                    inserirFuncionarios(lista, pessoas, colunas);
+                    break;
+                case 2:
+                    mostrarTabela(lista, pessoas, colunas);
+                    break;
+                case 3:
+                    System.out.println("Insira o produto a ser removido.");
+                    nomeProduto = scanner.next();
+                    removerFuncionario(lista, pessoas, nomeProduto);
+                    break;
+                case 4:
+                    salarioFinal(lista, pessoas, colunas);
+                    break;
+                case 5:
+                    alterarSalario(lista, pessoas);
+                    break;
+                case 6:
+                    System.out.println("Encerrando o programa...");
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        } while (opcao != 6);
+    }
+
+}
